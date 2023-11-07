@@ -86,5 +86,5 @@ def get_trained_model(model_name):
     elif model_name == "combined_base":
         walsh = TS_WALSH()
         dnn = Net()
-        model = CombinedModel(walsh, dnn) 
+        model = CombinedModel("combined_base", walsh, dnn) 
     return model
