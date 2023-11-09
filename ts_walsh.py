@@ -73,6 +73,8 @@ class TS_WALSH(nn.Module):
     def __init__(self, size = 28*28):
         super(TS_WALSH, self).__init__()
         
+        self.prebn = nn.BatchNorm1d(2)
+
         self.tse = nn.Linear(2,4)
         self.bn = nn.BatchNorm1d(4)
 
@@ -89,16 +91,15 @@ class TS_WALSH(nn.Module):
         
         if x.shape[1] != 2: 
             raise Exception("Input size is not as expected", x.shape)  
-        x = F.relu(self.bn(self.tse(x)))              # (n,4)
-        x = F.relu(self.bn1(self.tse1(x)))
-        x = F.dropout(x, training = self.training)    # (n,8)
-        x = F.relu(self.bn2(self.bn2(self.tse2(x))))  # (n,16)
+        x = (self.tse(self.prebn(x)))              # (n,4)
+        x = (self.tse1(x))
+        # x = F.dropout(x, training = self.training)    # (n,8)
+        x = (self.tse2(x))  # (n,16)
         global walsh 
         x =  x * walsh[target].squeeze()
+        x =self.tse3(self.bn2(x))
         
-        x = F.relu(self.bn3(self.tse3(x)))
-        
-        return x 
+        return self.bn3(x)
 
 class CombinedModel(nn.Module):
   def __init__(self, name, tswalsh, dnn):
