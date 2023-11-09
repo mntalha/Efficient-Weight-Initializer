@@ -9,6 +9,7 @@ Created on Mon Oct 23 22:30:30 2023
 #libraries
 import torch
 import time
+import torch.nn.functional as F
 
 class ModelTrain:
 

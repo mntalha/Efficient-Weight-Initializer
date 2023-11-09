@@ -8,6 +8,7 @@ Created on Mon Oct 23 22:37:13 2023
 
 #libraries
 import torch
+import torch.nn.functional as F
 
 class ModelTest:
 

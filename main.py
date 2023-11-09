@@ -8,10 +8,10 @@ Created on Sat Oct 21 22:41:57 2023
 
 batch_size = 32
 epoch_number = 10
-learning_rate = 3e-6
+learning_rate = 3e-5
 weight_decay = 3e-6
 model_name = None
-path_results = "./outputs"
+path_results = "./outputs/history_values/"
 device_ = "cpu" # "cuda:0" "cuda:1" "cpu"
 
 
@@ -69,7 +69,7 @@ def visualize(train_loss, validation_loss, title, img_name, epoch_number, status
    
 def save_iterations(name, ltt):
     
-    path = "./outputs/history_values/'+name+'.pickle"
+    path = "./outputs/training_results/"+name+".pickle"
     
     with open(path, 'wb') as f:
         pickle.dump(record, f)
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     
     
     #Model
-    model = get_trained_model(args.model)
+    model = get_trained_model(args.model, saved = True)
     logging.debug(f" Model : {args.model} , Parameters : {count_parameters(model)}")
     logging.debug(f" Training Dataset: {len(train_loader)* args.batch_size}")
     logging.debug(f" Test Dataset: {len(test_loader)* args.batch_size}")
