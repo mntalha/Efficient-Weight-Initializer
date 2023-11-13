@@ -27,7 +27,7 @@ import pickle
 
 # Dataloader
 from Dataset import call_dataloader
-
+from utils import name as model_name
 
 # Train , test and validation
 from model_train import ModelTrain
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     
     
     #Model
-    model = get_trained_model(args.model, saved = True)
+    model = get_trained_model(model_name, saved = False)
     logging.debug(f" Model : {args.model} , Parameters : {count_parameters(model)}")
     logging.debug(f" Training Dataset: {len(train_loader)* args.batch_size}")
     logging.debug(f" Test Dataset: {len(test_loader)* args.batch_size}")

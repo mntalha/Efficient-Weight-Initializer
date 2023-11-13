@@ -101,17 +101,7 @@ def load_pytorch_model(path, raw_model):
     if not isExist:
         print("model couldnt found...")
         return False
-    
-    # create raw model
-    # raw_model = Model_Class(input_channel,
-    #                   num_hiddens,
-    #                   num_residual_layers, 
-    #                   num_residual_hiddens,
-    #                   num_embeddings, 
-    #                   embedding_dim, 
-    #                   commitment_cost,
-    #                   decay)
-    
+        
     # load it
     if torch.cuda.is_available():
         raw_model.load_state_dict(torch.load(path))

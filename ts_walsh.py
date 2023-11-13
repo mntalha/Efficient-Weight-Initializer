@@ -68,54 +68,43 @@ def get_values():
 # )
 
 #TS_WALSH NETWORK 
-
-# class TS_WALSH(nn.Module):
-#     def __init__(self, size = 28*28):
-#         super(TS_WALSH, self).__init__()
-        
-#         self.prebn = nn.BatchNorm1d(2)
-
-#         self.tse = nn.Linear(2,4)
-#         self.bn = nn.BatchNorm1d(4)
-
-#         self.tse1 = nn.Linear(4,8)
-#         self.bn1 = nn.BatchNorm1d(8)
-
-#         self.tse2 = nn.Linear(8,16)
-#         self.bn2 = nn.BatchNorm1d(16)
-        
-#         self.tse3 = nn.Linear(16, size)
-#         self.bn3 = nn.BatchNorm1d(size)
-
-#     def forward(self, x, target):
-        
-#         if x.shape[1] != 2: 
-#             raise Exception("Input size is not as expected", x.shape)  
-#         x = (self.tse(self.prebn(x)))              # (n,4)
-#         x = (self.tse1(x))
-#         # x = F.dropout(x, training = self.training)    # (n,8)
-#         x = (self.tse2(x))  # (n,16)
-#         global walsh 
-#         x =  x * walsh[target].squeeze()
-#         x =self.tse3(self.bn2(x))
-        
-#         return self.bn3(x)
+from utils import img_size
 
 class TS_WALSH(nn.Module):
-    def __init__(self):
+    def __init__(self, size = img_size):
         super(TS_WALSH, self).__init__()
-        self.sp0 = nn.Linear(2,16)
-        self.bn = nn.BatchNorm1d(2)
-        self.sp = nn.Linear(16,28*28)
+        
+        self.prebn = nn.BatchNorm1d(2)
 
+        self.tse = nn.Linear(2,4)
+        
+        self.bn = nn.BatchNorm1d(4)
+
+        self.tse1 = nn.Linear(4,8)
+
+        self.bn1 = nn.BatchNorm1d(8)
+
+        self.tse2 = nn.Linear(8,16)
+
+        self.bn2 = nn.BatchNorm1d(16)
+        
+        self.tse3 = nn.Linear(16, size)
+
+        self.bn3 = nn.BatchNorm1d(size)
 
     def forward(self, x, target):
-        global walsh 
-    
-        x = self.sp0((x)) * walsh[target].squeeze()
         
-        x = self.sp(x)
-        return x
+        if x.shape[1] != 2: 
+            raise Exception("Input size is not as expected", x.shape)  
+        x = (self.tse((x)))
+        x = (self.tse1(x))
+        x = (self.tse2(x))
+        global walsh 
+        x += walsh[target].squeeze() 
+        x =self.tse3((x))
+        
+        return (x.unsqueeze(1).unsqueeze(1))
+
 
 class CombinedModel(nn.Module):
   def __init__(self, name, tswalsh, dnn):
@@ -125,7 +114,7 @@ class CombinedModel(nn.Module):
     self.name = name
     
   def forward(self,  x, target):
-    x = self.tswaslh(x,target)
+    x = self.tswaslh(x,target).view(x.shape[0], 1, int(np.sqrt(img_size)), int(np.sqrt(img_size)) )
     if self.name == "nvidia":
         pass
     x = self.dnn(x)

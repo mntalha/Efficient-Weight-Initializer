@@ -14,6 +14,7 @@ import torch
 import torchvision
 import numpy as np
 import torchvision.transforms as transforms
+from utils import img_size
 
 class CommonDataset(Dataset):
     def __init__(self, data_dir, name = None, mode = False):
@@ -46,8 +47,8 @@ class CommonDataset(Dataset):
         self.transform_operation = transforms.Compose([
             #transforms.ToPILImage(),
             #transforms.Grayscale(num_output_channels=1),
-            #transforms.Resize([28,28]),
-            # transforms.ToTensor(),
+            transforms.Resize([int(np.sqrt(img_size)),int(np.sqrt(img_size))]),
+            #transforms.ToTensor(),
             ])
         
     def __len__(self):
@@ -58,7 +59,7 @@ class CommonDataset(Dataset):
         if self.name == "country211":
             imgs, clss =  self.transform_operation_211(self.dataset[idx][0]), self.dataset[idx][1]
         else:
-            imgs, clss = self.transform_operation(self.dataset.data[idx]), self.dataset.targets[idx]
+            imgs, clss = self.transform_operation(self.dataset.data[idx].unsqueeze(0)), self.dataset.targets[idx]
         
         return imgs, clss
     

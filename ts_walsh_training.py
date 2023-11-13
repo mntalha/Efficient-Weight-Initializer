@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import pickle
 import random
 import numpy as np
+from utils import name
 
 torch.manual_seed(42)
 torch.cuda.manual_seed(42)
@@ -25,11 +26,12 @@ torch.cuda.manual_seed_all(42)
 
 from models import get_trained_model
 from ts_walsh import get_values
-learning_rate = 0.0001
-epochs = 100000
+learning_rate = 0.000007
+epochs = 100
 
 
 def save_the_model(name, network):
+    
     
     path = "./outputs/saved_model/"+name+".pickle"
     
@@ -38,8 +40,8 @@ def save_the_model(name, network):
 
     
 
-name = "combined_base"
-network = get_trained_model(name)
+
+network = get_trained_model("combined_"+name)
 criterion = torch.nn.CrossEntropyLoss()  #KLDivLoss , CrossEntropyLoss
 optimizer = optim.Adam(network.parameters(), lr=learning_rate)
 
@@ -47,7 +49,7 @@ optimizer = optim.Adam(network.parameters(), lr=learning_rate)
 network.train()
 x_tsne, targets = get_values()
 one_hot_vectors = torch.nn.functional.one_hot(targets, 10).float()
-loss_max = 9999
+loss_max = 9*10**7
 loss_values = []
 for i in range(epochs):
         optimizer.zero_grad()
@@ -56,7 +58,7 @@ for i in range(epochs):
         loss_values.append(loss.item())
         if loss_max > loss:
             loss_max = loss
-            save_the_model("baseline", network)
+            save_the_model(name, network)
         loss.backward()
         optimizer.step()
 network.eval()
