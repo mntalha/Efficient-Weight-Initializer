@@ -8,5 +8,10 @@ Created on Sun Nov 12 16:48:17 2023
 
 img_size = 64*64
 
-name = "alexnet"
-#name = "base"
+name = "base"
+# name = "alexnet"
+#name = "resnet50"
+# name = "vgg19"
+# name = "googleNet"
+# name = "squeezenet"
+# name = "nvidia"

@@ -32,7 +32,7 @@ class Net(nn.Module):
         x = F.relu(self.fc2(x))
         x = F.dropout(x, training=self.training)
         x = self.fc3(x)
-        return F.log_softmax(x)
+        return F.log_softmax(x,-1)
 
 
 def count_parameters(model):
@@ -55,62 +55,113 @@ def get_trained_model(model_name, saved = False):
         model = models.alexnet(pretrained=False)
         model.features[0] = nn.Conv2d(1, 64, kernel_size=(5, 5), stride=(4, 4), padding=(2, 2))
         model.classifier[6] = nn.Linear(in_features=4096, out_features= num_clss, bias=True)
-    elif model_name == "resnet50" and saved == False:
-        model = models.resnet50(pretrained=False)
-        model.conv1=nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
-        model.fc =nn.Linear(in_features=2048, out_features=num_clss, bias=True)
+
     elif model_name == "resnet34" and saved == False:
         model = models.resnet34(pretrained=False)
         model.conv1=nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
         model.fc =nn.Linear(in_features=512, out_features=num_clss, bias=True)
-    elif model_name == "vgg19" and saved == False:
-        model = models.vgg19(pretrained=False)
-        model.features[0] = nn.Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-        model.classifier[6] = nn.Linear(in_features=4096, out_features=num_clss, bias=True)
+    
     elif model_name == "vgg16" and saved == False:
         model = models.vgg16(pretrained=False)
         model.features[0] = nn.Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
         model.classifier[6] = nn.Linear(in_features=4096, out_features=num_clss, bias=True)
-    elif model_name == "googleNet" and saved == False:
-        model = models.googlenet(pretrained=False,transform_input=False)
-        model.conv1.conv = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
-        model.fc = nn.Linear(in_features=1024, out_features=num_clss, bias=True)
+
     elif model_name == "mobilnet" and saved == False:
         model = models.mobilenet_v2(pretrained=False)
         model.features[0][0] = nn.Conv2d(1, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
         model.classifier[1] = nn.Linear(in_features=1280, out_features=num_clss, bias=True)
-    elif model_name == "squeezenet" and saved == False:
-        model = models.squeezenet1_0(pretrained=False)
-        model.features[0] = nn.Conv2d(1, 96, kernel_size=(7, 7), stride=(2, 2))
-        model.classifier[1] = nn.Conv2d(512, num_clss, kernel_size=(1, 1), stride=(1, 1))
+    
     elif model_name == "inception" and saved == False:
         model = models.inception_v3(pretrained=False)
         model.Conv2d_1a_3x3.conv = nn.Conv2d(1, 32, kernel_size=(3, 3), stride=(2, 2), bias=False)
         model.fc = nn.Linear(in_features=2048, out_features=num_clss, bias=True)   
-    elif model_name == "nvidia" and saved == False:
-        model = SegformerForImageClassification.from_pretrained("nvidia/mit-b0")
-        model.classifier = nn.Linear(in_features=256, out_features=num_clss, bias=True)
+    
+
+
     elif model_name == "base" and saved == False :
         model = Net()
-        
+    elif model_name == "base" and saved == True:
+        model = load_the_model("base")        
     elif model_name == "combined_base" and saved == False:
         walsh = TS_WALSH()
         dnn = Net()
         model = CombinedModel("combined_base", walsh, dnn) 
         
-    elif model_name == "base" and saved == True:
-        model = load_the_model("base") 
-        
+
+    elif model_name == "alexnet" and saved == True:
+        model = load_the_model("alexnet")         
     elif model_name == "combined_alexnet" and saved == False:
         walsh = TS_WALSH()
         dnn = models.alexnet(pretrained=False)
         dnn.features[0] = nn.Conv2d(1, 64, kernel_size=(5, 5), stride=(4, 4), padding=(2, 2))
         dnn.classifier[6] = nn.Linear(in_features=4096, out_features= num_clss, bias=True)
         model = CombinedModel("combined_alexnet", walsh, dnn) 
-        
-    elif model_name == "alexnet" and saved == True:
-        model = load_the_model("alexnet") 
+     
 
+    elif model_name == "resnet50" and saved == False:
+        model = models.resnet50(pretrained=False)
+        model.conv1=nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+        model.fc =nn.Linear(in_features=2048, out_features=num_clss, bias=True)
+    elif model_name == "resnet50" and saved == True:
+        model = load_the_model("resnet50")         
+    elif model_name == "combined_resnet50" and saved == False:
+        walsh = TS_WALSH()
+        dnn = models.resnet50(pretrained=False)
+        dnn.conv1=nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+        dnn.fc =nn.Linear(in_features=2048, out_features=num_clss, bias=True)
+        model = CombinedModel("combined_resnet50", walsh, dnn) 
+
+    elif model_name == "vgg19" and saved == False:
+        model = models.vgg19(pretrained=False)
+        model.features[0] = nn.Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        model.classifier[6] = nn.Linear(in_features=4096, out_features=num_clss, bias=True)
+    elif model_name == "vgg19" and saved == True:
+        model = load_the_model("vgg19")    
+    elif model_name == "combined_vgg19" and saved == False:
+        walsh = TS_WALSH()        
+        dnn = models.vgg19(pretrained=False)
+        dnn.features[0] = nn.Conv2d(1, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        dnn.classifier[6] = nn.Linear(in_features=4096, out_features=num_clss, bias=True)
+        model = CombinedModel("combined_resnet50", walsh, dnn) 
+
+    elif model_name == "googleNet" and saved == False:
+        model = models.googlenet(pretrained=False,transform_input=False)
+        model.conv1.conv = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+        model.fc = nn.Linear(in_features=1024, out_features=num_clss, bias=True)
+    elif model_name == "googleNet" and saved == True:
+        model = load_the_model("googleNet")    
+    elif model_name == "combined_googleNet" and saved == False:
+        walsh = TS_WALSH()        
+        dnn = models.googlenet(pretrained=False,transform_input=False)
+        dnn.conv1.conv = nn.Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
+        dnn.fc = nn.Linear(in_features=1024, out_features=num_clss, bias=True)
+        model = CombinedModel("combined_googleNet", walsh, dnn) 
+
+    elif model_name == "squeezenet" and saved == False:
+        model = models.squeezenet1_0(pretrained=False)
+        model.features[0] = nn.Conv2d(1, 96, kernel_size=(7, 7), stride=(2, 2))
+        model.classifier[1] = nn.Conv2d(512, num_clss, kernel_size=(1, 1), stride=(1, 1))
+    elif model_name == "squeezenet" and saved == True:
+        model = load_the_model("squeezenet")    
+    elif model_name == "combined_squeezenet" and saved == False:
+        walsh = TS_WALSH()        
+        dnn = models.squeezenet1_0(pretrained=False)
+        dnn.features[0] = nn.Conv2d(1, 96, kernel_size=(7, 7), stride=(2, 2))
+        dnn.classifier[1] = nn.Conv2d(512, num_clss, kernel_size=(1, 1), stride=(1, 1))
+        model = CombinedModel("combined_squeezenet", walsh, dnn) 
+
+    elif model_name == "nvidia" and saved == False:
+        model = SegformerForImageClassification.from_pretrained("nvidia/mit-b0")
+        model.segformer.encoder.patch_embeddings[0].proj = nn.Conv2d(1, 32, kernel_size=(7, 7), stride=(4, 4), padding=(3, 3))
+        model.classifier = nn.Linear(in_features=256, out_features=num_clss, bias=True)
+    elif model_name == "nvidia" and saved == True:
+        model = load_the_model("nvidia")    
+    elif model_name == "combined_nvidia" and saved == False:
+        walsh = TS_WALSH()        
+        dnn = SegformerForImageClassification.from_pretrained("nvidia/mit-b0")
+        dnn.segformer.encoder.patch_embeddings[0].proj = nn.Conv2d(1, 32, kernel_size=(7, 7), stride=(4, 4), padding=(3, 3))
+        dnn.classifier = nn.Linear(in_features=256, out_features=num_clss, bias=True)
+        model = CombinedModel("combined_nvidia", walsh, dnn) 
 
     return model
 

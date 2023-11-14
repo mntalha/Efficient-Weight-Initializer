@@ -60,6 +60,8 @@ class ModelTest:
 
                 if self.model_name == "nvidia":
                     y_pred2 = self.model(imgs2)[0]
+                elif self.model_name == "googleNet":
+                    y_pred2 = self.model(imgs2)
                 else:
                     y_pred2 = self.model(imgs2)
                     

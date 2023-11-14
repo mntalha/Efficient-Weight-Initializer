@@ -105,6 +105,8 @@ class ModelTrain:
                
                 if self.model_name == "nvidia":
                     y_pred = self.model(imgs)[0]
+                elif self.model_name == "googleNet":
+                    y_pred = self.model(imgs)[0]
                 else:
                     y_pred = self.model(imgs)
                     #torch.tensor([self.classes.index(i) for i in clss]).to(self.device)
@@ -161,6 +163,8 @@ class ModelTrain:
 
                         if self.model_name == "nvidia":
                             y_pred2 = self.model(imgs2)[0]
+                        elif self.model_name == "googleNet":
+                            y_pred2 = self.model(imgs2)
                         else:
                             y_pred2 = self.model(imgs2)
                         #torch.tensor([self.classes.index(i) for i in clss]).to(self.device)

@@ -12,7 +12,7 @@ learning_rate = 3e-5
 weight_decay = 3e-6
 model_name = None
 path_results = "./outputs/history_values/"
-device_ = "cpu" # "cuda:0" "cuda:1" "cpu"
+device_ = "cuda:0" # "cuda:0" "cuda:1" "cpu"
 
 
 #Libraries 
@@ -110,7 +110,7 @@ if __name__ == "__main__":
     #
     #Logging 
     import logging
-    log_file_name = args.model + str(args.batch_size) + "_training_result"
+    log_file_name = model_name + str(args.batch_size) + "_training_result"
     log_path = path_results
     log_file_name = os.path.join(log_path, log_file_name)
     logging.basicConfig(
@@ -128,7 +128,8 @@ if __name__ == "__main__":
     
     
     #Model
-    model = get_trained_model(model_name, saved = False)
+    saved = True
+    model = get_trained_model(model_name, saved = saved)
     logging.debug(f" Model : {args.model} , Parameters : {count_parameters(model)}")
     logging.debug(f" Training Dataset: {len(train_loader)* args.batch_size}")
     logging.debug(f" Test Dataset: {len(test_loader)* args.batch_size}")
@@ -146,7 +147,7 @@ if __name__ == "__main__":
     criteria = nn.CrossEntropyLoss()
     
     models_dict =  {
-        'name' : args.model,
+        'name' : model_name,
         'model' : model ,
         'criteria' :  criteria,
         'optimizer' : optimizer ,
@@ -170,7 +171,7 @@ if __name__ == "__main__":
     test_loss, test_acc = test_obj.run_()
     
     #Save values
-    name = args.model + "model_prf_results"
+    name = model_name + "model_prf_results" + str(saved)
     record = {
         'accuracy_values':train_model_prf_rslt['accuracy_values'],
         'loss_values':train_model_prf_rslt['loss_values'],

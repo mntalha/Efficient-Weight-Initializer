@@ -33,28 +33,42 @@ targets = torch.tensor([i for i in range(num_clss)])
 # Dataloader
 from Dataset import call_dataloader
 
-trainloader, test_loader = call_dataloader("./data", batch_size = 100, name = "mnist")
-sample = next(iter(trainloader))
+# trainloader, test_loader = call_dataloader("./data", batch_size = 100, name = "mnist")
+# sample = next(iter(trainloader))
 
-sampled_data = []
+# sampled_data = []
 
-for idx in range(num_clss):
-    indexes = torch.where(sample[1] == idx)[0]
-    size = indexes.size(0)
-    random_index = torch.randint(0, size, (1,)).item()
-    random_element = sample[0][indexes[random_index]].view(-1)
-    sampled_data.append(np.array(random_element))
+# for idx in range(num_clss):
+#     indexes = torch.where(sample[1] == idx)[0]
+#     size = indexes.size(0)
+#     random_index = torch.randint(0, size, (1,)).item()
+#     random_element = sample[0][indexes[random_index]].view(-1)
+#     sampled_data.append(np.array(random_element))
 
 
 
 from sklearn.manifold import TSNE
-x_tsne = TSNE(n_components = 2, perplexity = 5, n_jobs=-1).fit_transform(np.array(sampled_data))
-x_tsne = torch.tensor(x_tsne)
+# x_tsne = TSNE(n_components = 2, perplexity = 5, n_jobs=-1).fit_transform(np.array(sampled_data))
+# x_tsne = torch.tensor(x_tsne)
 
 def get_values():
-    global x_tsne, targets
+    global targets
+    return  targets
+
+def get_tse(loader):
+    sampled_data = []
+
+    for idx in range(num_clss):
+        indexes = torch.where(loader[1] == idx)[0]
+        size = indexes.size(0)
+        random_index = torch.randint(0, size, (1,)).item()
+        random_element = loader[0][indexes[random_index]].view(-1)
+        sampled_data.append(np.array(random_element))
+    x_tsne = TSNE(n_components = 2, perplexity = 5, n_jobs=-1).fit_transform(np.array(sampled_data))
+    x_tsne = torch.tensor(x_tsne)
     return x_tsne, targets
 
+    
 # import seaborn as sns
 # import matplotlib.pyplot as plt
 # plt.figure(figsize=(16,10))
@@ -99,8 +113,9 @@ class TS_WALSH(nn.Module):
         x = (self.tse((x)))
         x = (self.tse1(x))
         x = (self.tse2(x))
-        global walsh 
-        x += walsh[target].squeeze() 
+        global walsh
+        walsh = walsh.to("cuda:0")
+        x *= walsh[target].squeeze() 
         x =self.tse3((x))
         
         return (x.unsqueeze(1).unsqueeze(1))
