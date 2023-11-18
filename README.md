@@ -81,7 +81,7 @@ And the following options:
 Here's an example:
 
 ```
-python main.py --model_name $mdls --pre_trained $xx --dataset $data
+python main.py --model_name $mdls --pre_trained $binary --dataset $data
 ```
 
 ## Results
