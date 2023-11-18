@@ -1,3 +1,10 @@
+# Sup-Walsh ("Effective Weight Initialization Technique)
+
+We propose the auxiliary network model, called  $\textbf{Sup-Walsh}$  (Support Walsh), as a weight re-organizer that remains connected throughout the pretraining process. In this structure, our goal is to enhance the boundaries between classes, believing that expanding these boundaries makes them more distinguishable heuristically.
+
+The proposed solution has been tested on three publicly available datasets, MNIST \cite{deng2012mnist}, CIFAR-10 \cite{recht2018cifar}, Fashion-MNIST \cite{xiao2017fashion}. Additionally, its success has been measured on popular classification models by integrating the developed support network.
+Sup-Walsh consistently outperformed others in the experiments although relative improvements vary across models and datasets
+
 # Contribtuion
 
 
