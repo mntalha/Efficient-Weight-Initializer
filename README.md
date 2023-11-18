@@ -69,7 +69,7 @@ You can also use the `ts_walsh_training.py` script to pretrain different models 
 
 ```bash
 python ts_walsh_training.py --model_name $model --dataset $dataset
-
+```
 
 You can also use the `main.py` script to train different main models on various datasets with or without Sup-Walsh.
 
@@ -78,11 +78,21 @@ And the following options:
 - 0 (not pretrained)
 - 1 (pretrained)
 
- Here's an example:
+Here's an example:
 
+```
 python main.py --model_name $mdls --pre_trained $xx --dataset $data
+```
 
+## Results
 
+Our proposed model, Sup-Walsh, has shown significant improvements over traditional weight initialization techniques. It consistently outperforms other methods across various models and datasets, enhancing the boundaries between classes and making them more distinguishable.
+
+Here's a summary of our results:
+
+![Results](figures/Results.png)
+
+For more detailed results, please refer to our [paper](link-to-paper).
 
 # Contribtuion
 
