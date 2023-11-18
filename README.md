@@ -4,7 +4,13 @@ We propose the auxiliary network model, called  $\textbf{Sup-Walsh}$  (Support W
 
 ![Walsh Matrix](figures/Walsh_Matrix.png)
 
+
+After conducting several experiments on data representation, we discovered that the Walsh Matrix approach yields the most significant differences. See the following plot for a visual representation of the reductions: 
+
+![Plot of Reductions](figures/Plot_of_Reductions.png)
+
 The proposed solution has been tested on three publicly available datasets, [MNIST](http://yann.lecun.com/exdb/mnist/), [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html) , [Fashion-MNIST](https://github.com/zalandoresearch/fashion-mnist). Additionally, its success has been measured on popular classification models by integrating the developed support network. Sup-Walsh consistently outperformed others in the experiments although relative improvements vary across models and datasets
+
 
 ## Traditional Techniques
 
@@ -16,7 +22,14 @@ The proposed solution has been tested on three publicly available datasets, [MNI
 
 # Deep Learning Weight Initialization Techniques
 
-This repository contains implementations of proposed weight initialization techniques used in deep learning.
+This repository contains implementations of proposed weight initialization techniques used in deep learning. figures/Pipeline_Stages.png
+Our design consist of 4 stages that is shown in Figure.  Initially, a random sample is chosen from each class within every batch. Subsequently, these samples undergo feature extraction using t-SNE. The processed data is then input into the Sup-Walsh, designed to relocate the class centers to maximize the distance between them, assisted by the Walsh matrix. Consequently, Sup-Walsh, which is integrated at the onset of the network and extracted after completing the initial pretraining phase, enables the main model to more effectively distinguish between classes. 
+
+This repository contains implementations of our proposed method, Sup-Walsh. 
+
+![Pipeline Stages](figures/Pipeline_Stages.png)
+
+Our design consists of four stages, as shown in the figure above. The process begins by selecting a random sample from each class within every batch. These samples then undergo feature extraction using t-SNE. The processed data is input into Sup-Walsh, which is designed to relocate the class centers to maximize the distance between them, with the assistance of the Walsh matrix. Sup-Walsh is integrated at the beginning of the network and is extracted after the initial pretraining phase is complete. This allows the main model to distinguish between classes more effectively.
 
 ## Requirements
 
@@ -30,9 +43,46 @@ This repository contains implementations of proposed weight initialization techn
 - torch 2.1.0
 - scikit-learn 1.3.0
 
+## Models and Datasets
+
+The `ts_walsh_training.py` script supports the following models:
+
+- Base
+- AlexNet
+- ResNet50
+- VGG19
+- GoogleNet
+- SqueezeNet
+- Nvidia
+
+And the following datasets:
+
+- MNIST
+- CIFAR-10
+- Fashion-MNIST
+
 ## Usage
 
 Each technique is implemented in its own Python file. You can use them by importing the required file into your project.
+
+You can also use the `ts_walsh_training.py` script to pretrain different models on various datasets. Here's an example:
+
+```bash
+python ts_walsh_training.py --model_name $model --dataset $dataset
+
+
+You can also use the `main.py` script to train different main models on various datasets with or without Sup-Walsh.
+
+And the following options:
+
+- 0 (not pretrained)
+- 1 (pretrained)
+
+ Here's an example:
+
+python main.py --model_name $mdls --pre_trained $xx --dataset $data
+
+
 
 # Contribtuion
 
