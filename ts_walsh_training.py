@@ -3,7 +3,7 @@
 """
 Created on Mon Nov  6 22:36:43 2023
 
-@author: talha
+@author: 
 """
 
 import torch.nn as nn
@@ -22,7 +22,7 @@ from Dataset import call_dataloader
 from models import get_trained_model
 from ts_walsh import get_values, get_tse
 learning_rate = 3e-5
-device_ = "cuda:0" # "cuda:0" "cuda:1" "cpu"
+device_ = "cpu" # "cuda:0" "cuda:1" "cpu"
 
 def save_the_model(name, network):
     
@@ -57,9 +57,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Pytorch Pretrained Model Comparison')
     parser.add_argument('--model_name', type=str, default='base',
                         help='resnet50, resnet34, vgg19, vgg16, googleNet, mobilnet, squeezenet, inception (default: alexnet)')
-    parser.add_argument('--epochs', type=int, default=10,
+    parser.add_argument('--epochs', type=int, default=2,
                         help='32, 64, 128 (default: 64)')   
-    parser.add_argument('--dataset', type=str, default = "mnist", 
+    parser.add_argument('--dataset', type=str, default = "cifar10", 
                         help='mnist, cifar10, fashionmnist, country211')
     args = parser.parse_args()
 
@@ -90,13 +90,15 @@ if __name__ == "__main__":
     for i in range(epochs):
         print("epochs ", i)
         for loader in trainloader:
-            x_tsne, targets =  get_tse(loader)
+            print(args.dataset)
+            x_tsne, targets =  get_tse((loader))
             x_tsne = x_tsne.to(device)
             targets = targets.to(device)
             optimizer.zero_grad()
             output = network(x_tsne, targets)
             loss = criterion(output, targets)
             loss_values.append(loss.item())
+
             if loss_max > loss:
                 loss_max = loss
                 save_the_model(args.model_name+args.dataset, network)

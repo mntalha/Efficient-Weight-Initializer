@@ -31,6 +31,5 @@ This repository contains implementations of proposed weight initialization techn
 
 Each technique is implemented in its own Python file. You can use them by importing the required file into your project.
 
-```python
-from weight_initializations import he_initialization
+
 

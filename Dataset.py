@@ -3,7 +3,7 @@
 """
 Created on Sat Oct 21 19:16:55 2023
 
-@author: talha
+@author: 
 """
 
 from torch.utils.data import Dataset, DataLoader, random_split
@@ -39,9 +39,10 @@ class CommonDataset(Dataset):
             mode = "train" if mode == True else "test"
             self.dataset = torchvision.datasets.Country211(self.path, split = mode, download = True)
             self.classes = self.dataset.classes
-        self.transform_operation_211 = transforms.Compose([
-            transforms.Grayscale(num_output_channels=3),
-            transforms.Resize([128,128]),
+        self.transform_operation_cifar = transforms.Compose([
+            transforms.ToPILImage(),
+            transforms.Grayscale(num_output_channels=1),
+            transforms.Resize([int(np.sqrt(img_size)),int(np.sqrt(img_size))]),
             transforms.ToTensor(),
             ])
         self.transform_operation = transforms.Compose([
@@ -58,6 +59,8 @@ class CommonDataset(Dataset):
         
         if self.name == "country211":
             imgs, clss =  self.transform_operation_211(self.dataset[idx][0]), self.dataset[idx][1]
+        elif self.name == "cifar10":
+            imgs, clss =  self.transform_operation_cifar(self.dataset.data[idx]), self.dataset[idx][1]
         else:
             imgs, clss = self.transform_operation(self.dataset.data[idx].unsqueeze(0)), self.dataset.targets[idx]
         
@@ -76,10 +79,4 @@ def call_dataloader(path, batch_size, name):
     return trainloader, test_loader
 
 if __name__ == "__main__":
-    
-    
-    trainloader, test_loader = call_dataloader("./data", batch_size = 32, name = "mnist")
-    
- 
-    for i in trainloader:
-        print("ss")
+    trainloader, test_loader = call_dataloader("./data", batch_size = 32, name = "cifar10")

@@ -3,7 +3,7 @@
 """
 Created on Mon Oct 23 22:37:13 2023
 
-@author: talha
+@author: 
 """
 import torch
 import numpy as np
@@ -57,15 +57,15 @@ def get_values():
 
 def get_tse(loader):
     sampled_data = []
-
     for idx in range(num_clss):
         indexes = torch.where(loader[1] == idx)[0]
         size = indexes.size(0)
         random_index = torch.randint(0, size, (1,)).item()
         random_element = loader[0][indexes[random_index]].view(-1)
         sampled_data.append(np.array(random_element))
-    x_tsne = TSNE(n_components = 2, perplexity = 5, n_jobs=-1).fit_transform(np.array(sampled_data))
+    x_tsne = TSNE(n_components = 2, perplexity = 5).fit_transform(np.array(sampled_data))
     x_tsne = torch.tensor(x_tsne)
+    print("indexes")
     return x_tsne, targets
 
     
@@ -114,7 +114,7 @@ class TS_WALSH(nn.Module):
         x = (self.tse1(x))
         x = (self.tse2(x))
         global walsh
-        walsh = walsh.to("cuda:0")
+        walsh = walsh.to("cpu")
         x *= walsh[target].squeeze() 
         x =self.tse3((x))
         
@@ -130,11 +130,10 @@ class CombinedModel(nn.Module):
     
   def forward(self,  x, target):
     x = self.tswaslh(x,target).view(x.shape[0], 1, int(np.sqrt(img_size)), int(np.sqrt(img_size)) )
-    if self.name == "nvidia":
-        pass
-    x = self.dnn(x)
+    if self.name == "combined_nvidia":
+        x = self.dnn(x)[0]
+    elif self.name == "combined_googleNet":
+        x = self.dnn(x)[0]
+    else:
+        x = self.dnn(x)
     return x
-
-
-# network = TS_WALSH()
-# result = network(x_tsne,targets)

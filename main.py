@@ -3,7 +3,7 @@
 """
 Created on Sat Oct 21 22:41:57 2023
 
-@author: talha
+@author: 
 """
 
 batch_size = 32
@@ -90,14 +90,17 @@ if __name__ == "__main__":
     
     import argparse
     parser = argparse.ArgumentParser(description='Pytorch Pretrained Model Comparison')
-    parser.add_argument('--model', type=str, default='base',
+    parser.add_argument('--model_name', type=str, default='base',
                         help='resnet50, resnet34, vgg19, vgg16, googleNet, mobilnet, squeezenet, inception (default: alexnet)')
-    parser.add_argument('--batch_size', type=int, default=32,
+    parser.add_argument('--epochs', type=int, default=10,
                         help='32, 64, 128 (default: 64)')   
-    parser.add_argument('--save_models', type=str, default = path_results, 
-                        help='directory to save ai models')
-    parser.add_argument('--dataset', type=str, default = "mnist", 
+    parser.add_argument('--dataset', type=str, default = "cifar10", 
                         help='mnist, cifar10, fashionmnist, country211')
+    parser.add_argument('--pre_trained', type=int, default = 1, 
+                        help='mnist, cifar10, fashionmnist, country211')
+    parser.add_argument('--batch_size', type=int, default=32,
+                        help='32, 64, 128 (default: 64)') 
+
     args = parser.parse_args()
     #
     set_seed()
@@ -110,7 +113,7 @@ if __name__ == "__main__":
     #
     #Logging 
     import logging
-    log_file_name = model_name + str(args.batch_size) + "_training_result"
+    log_file_name = args.model_name + str(args.dataset) + str(args.pre_trained)+ "_training_result"
     log_path = path_results
     log_file_name = os.path.join(log_path, log_file_name)
     logging.basicConfig(
@@ -128,9 +131,9 @@ if __name__ == "__main__":
     
     
     #Model
-    saved = True
-    model = get_trained_model(model_name, saved = saved)
-    logging.debug(f" Model : {args.model} , Parameters : {count_parameters(model)}")
+    saved = int(args.pre_trained)
+    model = get_trained_model(args.model_name + args.dataset, saved = saved)
+    logging.debug(f" Model : {args.model_name} , Parameters : {count_parameters(model)}")
     logging.debug(f" Training Dataset: {len(train_loader)* args.batch_size}")
     logging.debug(f" Test Dataset: {len(test_loader)* args.batch_size}")
     logging.debug("###################################################################################")
@@ -147,7 +150,7 @@ if __name__ == "__main__":
     criteria = nn.CrossEntropyLoss()
     
     models_dict =  {
-        'name' : model_name,
+        'name' : args.model_name,
         'model' : model ,
         'criteria' :  criteria,
         'optimizer' : optimizer ,
@@ -171,7 +174,7 @@ if __name__ == "__main__":
     test_loss, test_acc = test_obj.run_()
     
     #Save values
-    name = model_name + "model_prf_results" + str(saved)
+    name = args.model_name + "model_prf_results" + str(saved) + str(args.dataset)
     record = {
         'accuracy_values':train_model_prf_rslt['accuracy_values'],
         'loss_values':train_model_prf_rslt['loss_values'],
@@ -181,10 +184,7 @@ if __name__ == "__main__":
       }
     
     save_iterations(name, record)
-    
-    
-   
-          
+    #print (name, "finished")
     #Loss graph
     # title = args.model + " Loss_Function"
     # img_name = path_results + title + ".png"
