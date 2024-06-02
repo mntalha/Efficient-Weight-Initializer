@@ -89,9 +89,9 @@ python main.py --model_name $mdls --pre_trained $binary --dataset $data
 Our proposed model, Sup-Walsh, has shown significant improvements over traditional weight initialization techniques. It consistently outperforms other methods across various models and datasets, enhancing the boundaries between classes and making them more distinguishable.
 
 Here's a summary of our results:
-![Results](figures/Screenshot 2024-06-02 at 12.17.52 AM.png)
-![Results](figures/Screenshot 2024-06-02 at 12.17.59 AM.png)
-![Results](figures/Screenshot 2024-06-02 at 12.18.10 AM.png)
+![Results](figures/1.png)
+![Results](figures/2.png)
+![Results](figures/3.png)
 
 For more detailed results, please refer to our [paper](link-to-paper).
 
